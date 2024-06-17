@@ -1,11 +1,6 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
-/////////////////////////////////////////////////
-// Data
+// <----- BANK APP ----->
 
 // DIFFERENT DATA! Contains movement dates, currency and locale
 
@@ -92,13 +87,7 @@ const formatMovementDate = function (date, locale) {
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
-  // else {
-  //   const day = `${date.getDate()}`.padStart(2, 0);
-  //   const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  //   const year = date.getFullYear();
 
-  //   return `${day}/${month}/${year}`;
-  // }
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
@@ -106,7 +95,6 @@ const formatMovementDate = function (date, locale) {
 const formatCurrency = function (value, locale, currency) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    // currency: 'INR',
     currency: currency,
   }).format(value);
 };
@@ -144,7 +132,6 @@ const displayMovements = function (acc, sort = false) {
 // <----- Calculating Display Balance ------>
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  // const formattedMov = formatCurrency(acc.balance, acc.locale, acc.currency);
 
   labelBalance.textContent = formatCurrency(
     acc.balance,
@@ -158,13 +145,11 @@ const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  // labelSumIn.textContent = `${incomes.toFixed(2)}€`;
   labelSumIn.textContent = formatCurrency(incomes, acc.locale, acc.currency);
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  // labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
   labelSumOut.textContent = formatCurrency(
     Math.abs(out),
     acc.locale,
@@ -175,11 +160,9 @@ const calcDisplaySummary = function (acc) {
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => {
-      // console.log(arr);
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  // labelSumInterest.textContent = `${interest.toFixed(2)}€`;
   labelSumInterest.textContent = formatCurrency(
     interest,
     acc.locale,
@@ -246,11 +229,6 @@ const startLogoutTimer = function () {
 // Event handlers
 let currentAccount, timer;
 
-// FAKE ALWAYS LOGGED IN
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = 100;
-
 // <----- Login Button ------>
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -277,30 +255,12 @@ btnLogin.addEventListener('click', function (e) {
       day: 'numeric',
       month: 'numeric',
       year: 'numeric',
-      // weekday: 'long',
     };
 
-    // setting the country language accorging to browser
-    // const locale = navigator.languages;
-    // console.log(locale);
-    // labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(now);
-    ////// setting local as per users country
     labelDate.textContent = new Intl.DateTimeFormat(
       currentAccount.locale,
       options
     ).format(now);
-
-    // labelDate.textContent = new Intl.DateTimeFormat('en-IN', options).format(now);
-
-    /*
-    const day = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-    */
-    // --- setting date and time below CURRENT BALANCE after Login ---
 
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -351,7 +311,6 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
-  // Math.floor() - rounds a number DOWN to the nearest integer
   const amount = Math.floor(inputLoanAmount.value);
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
@@ -385,7 +344,6 @@ btnClose.addEventListener('click', function (e) {
       acc => acc.username === currentAccount.username
     );
     console.log(index);
-    // .indexOf(23)
 
     // Delete account
     accounts.splice(index, 1);
@@ -404,7 +362,3 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
 });
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
